@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Vineyard</title>
-<script src="https://cdn.jsdelivr.net/npm/aframe@1.5.0/dist/aframe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aframe@1.5.0/dist/aframe-v1.5.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 <style>
   [hidden] { display: none !important; }
@@ -65,7 +65,7 @@ window.addEventListener('error', function (e) {
     <!-- rotation="0 0 0"  : logo on a wall or an upright print.
          rotation="90 0 0" : logo lying flat on a table. -->
     <a-entity id="stage" rotation="0 0 0">
-      <a-entity class="member" gltf-model="#bassModel"   play-clips position="-0.35 0 0"   scale="0.2 0.2 0.2"></a-entity>
+      <a-entity class="member" gltf-model="#bassModel"   play-clips position="-0.19 0 0.13"  scale="0.2 0.2 0.2"></a-entity>
       <a-entity class="member" gltf-model="#singerModel" play-clips position="0 0 0.05"    scale="0.2 0.2 0.2"></a-entity>
       <a-entity class="member" gltf-model="#drumsModel"  play-clips position="0.35 0 0"    scale="0.2 0.2 0.2"></a-entity>
     </a-entity>
