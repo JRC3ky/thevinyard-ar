@@ -33,6 +33,16 @@
   <p id="status"></p>
 </div>
 
+<script>
+// Shows script/library load failures on the Start screen.
+window.addEventListener('error', function (e) {
+  var s = document.getElementById('status');
+  if (!s) return;
+  if (e.target && e.target.src) s.textContent = 'Could not load ' + e.target.src.split('/').pop();
+  else s.textContent = 'Error: ' + e.message;
+}, true);
+</script>
+
 <a-scene
   mindar-image="imageTargetSrc: ./targets.mind; autoStart: false;"
   color-space="sRGB"
@@ -201,6 +211,7 @@ function ready() {
   startBtn.textContent = 'Start';
 }
 if (assetsEl.hasLoaded) ready(); else assetsEl.addEventListener('loaded', ready);
+setTimeout(ready, 4000);   // do not wait forever for large model files
 
 startBtn.addEventListener('click', () => {
   Tune.unlock();                                   // a tap is required before sound can play
