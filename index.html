@@ -30,6 +30,7 @@
   <h1>The Vineyard</h1>
   <p>Tap Start, allow the camera, then point it at the logo.</p>
   <button id="startBtn" disabled>Loading...</button>
+  <p id="status"></p>
 </div>
 
 <a-scene
@@ -211,6 +212,22 @@ startBtn.addEventListener('click', () => {
 target.addEventListener('targetFound', () => { visible = true; perform(); });
 target.addEventListener('targetLost', () => { visible = false; Tune.stop(); });
 document.addEventListener('click', () => { if (visible) perform(); });   // tap to replay
+
+// Shows which file is loading, or which one failed.
+const statusEl = document.getElementById('status');
+document.querySelectorAll('a-asset-item').forEach((item) => {
+  const name = item.getAttribute('src');
+  item.addEventListener('progress', (e) => {
+    const d = e.detail;
+    if (d && d.totalBytes) {
+      statusEl.textContent = 'Loading ' + name + ' ' + Math.round(100 * d.loadedBytes / d.totalBytes) + '%';
+    }
+  });
+  item.addEventListener('loaded', () => { statusEl.textContent = name + ' ready'; });
+  item.addEventListener('error', () => {
+    statusEl.textContent = 'Could not load ' + name + '. Check the file name and upload.';
+  });
+});
 </script>
 </body>
 </html>
