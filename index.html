@@ -24,6 +24,12 @@
     border: 0; border-radius: 999px; background: #8e9bff; color: #0e1020;
   }
   #startBtn:disabled { opacity: .5; }
+  #hud {
+    position: fixed; left: 0; right: 0; top: 0; z-index: 20;
+    padding: 8px 12px; text-align: center;
+    font: 14px/1.3 ui-monospace, Menlo, Consolas, monospace;
+    background: rgba(0, 0, 0, .65); color: #fff;
+  }
 </style>
 </head>
 <body>
@@ -44,6 +50,8 @@ window.addEventListener('error', function (e) {
   else s.textContent = 'Error: ' + e.message;
 }, true);
 </script>
+
+<div id="hud">build 8 | starting...</div>
 
 <a-scene
   mindar-image="imageTargetSrc: ./targets.mind; autoStart: false;"
@@ -66,10 +74,12 @@ window.addEventListener('error', function (e) {
   <a-entity id="target" mindar-image-target="targetIndex: 0">
     <!-- rotation="0 0 0"  : logo on a wall or an upright print.
          rotation="90 0 0" : logo lying flat on a table. -->
+    <!-- Magenta test cube at the middle of the logo. Delete this line when everything works. -->
+    <a-box id="marker" color="#ff00ff" position="0 0 0.05" scale="0.08 0.08 0.08"></a-box>
     <a-entity id="stage" rotation="0 0 0">
-      <a-entity class="member" gltf-model="#bassModel"   play-clips position="-0.19 0 0.13"  scale="0.2 0.2 0.2"></a-entity>
-      <a-entity class="member" gltf-model="#singerModel" play-clips position="0 0 0.05"    scale="0.2 0.2 0.2"></a-entity>
-      <a-entity class="member" gltf-model="#drumsModel"  play-clips position="0.35 0 0"    scale="0.2 0.2 0.2"></a-entity>
+      <a-entity class="member" gltf-model="#bassModel"   play-clips position="-0.07 0 0.23"  scale="0.35 0.35 0.35"></a-entity>
+      <a-entity class="member" gltf-model="#singerModel" play-clips position="0 0 0.05"    scale="0.35 0.35 0.35"></a-entity>
+      <a-entity class="member" gltf-model="#drumsModel"  play-clips position="0.38 0 0"    scale="0.35 0.35 0.35"></a-entity>
     </a-entity>
   </a-entity>
 </a-scene>
@@ -199,6 +209,16 @@ const assetsEl = document.querySelector('a-assets');
 const startBtn = document.getElementById('startBtn');
 const target = document.getElementById('target');
 let visible = false;
+let modelsLoaded = 0;
+const hud = document.getElementById('hud');
+function hudUpdate() {
+  hud.textContent = 'build 8 | logo: ' + (visible ? 'FOUND' : 'not found') + ' | models: ' + modelsLoaded + '/3';
+}
+document.querySelectorAll('.member').forEach((el) => {
+  el.addEventListener('model-loaded', () => { modelsLoaded++; hudUpdate(); });
+  el.addEventListener('model-error', () => { hud.textContent = 'build 8 | model failed to load'; });
+});
+hudUpdate();
 
 function perform() {
   Tune.play();
@@ -222,8 +242,8 @@ startBtn.addEventListener('click', () => {
   if (sceneEl.hasLoaded) go(); else sceneEl.addEventListener('loaded', go);
 });
 
-target.addEventListener('targetFound', () => { visible = true; perform(); });
-target.addEventListener('targetLost', () => { visible = false; Tune.stop(); });
+target.addEventListener('targetFound', () => { visible = true; perform(); hudUpdate(); });
+target.addEventListener('targetLost', () => { visible = false; Tune.stop(); hudUpdate(); });
 document.addEventListener('click', () => { if (visible) perform(); });   // tap to replay
 
 // Shows which file is loading, or which one failed.
